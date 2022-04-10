@@ -33,8 +33,6 @@ class FocusAction : AnAction() {
                 project.service<FocusService>().focusOn(focusSettings, focusModule.gradleModulePath)
             }
         }
-
-
     }
 
     override fun update(event: AnActionEvent) {
@@ -65,5 +63,4 @@ class FocusAction : AnAction() {
             else -> hide()
         }
     }
-
 }

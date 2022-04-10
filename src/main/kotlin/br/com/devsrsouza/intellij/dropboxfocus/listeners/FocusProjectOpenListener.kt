@@ -1,9 +1,9 @@
 package br.com.devsrsouza.intellij.dropboxfocus.listeners
 
-import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings
-import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettingsReader
 import br.com.devsrsouza.intellij.dropboxfocus.actions.logger
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusService
+import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings
+import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettingsReader
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
@@ -22,7 +22,7 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
         val focusSettings = settingsService.getProjectFocusSettings()
         logger.debug("Founded Focus Settings in ${project.name}: $focusSettings")
 
-        if(focusSettings != null) {
+        if (focusSettings != null) {
             val focusService = project.service<FocusService>()
             selectFocusDialog(focusSettings, focusService)
                 .showAndGet()
@@ -40,7 +40,7 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
             override fun createCenterPanel(): JComponent? {
                 return JPanel().apply {
                     layout = GridLayout(0, 1)
-                    if(focusSettings.currentFocus != null) {
+                    if (focusSettings.currentFocus != null) {
                         add(JLabel("Current focus: ${focusSettings.currentFocus}"))
                     }
                     add(JLabel("Select project to Focus"))

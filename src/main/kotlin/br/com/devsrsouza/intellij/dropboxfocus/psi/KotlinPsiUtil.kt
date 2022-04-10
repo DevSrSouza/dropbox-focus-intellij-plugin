@@ -2,15 +2,12 @@ package br.com.devsrsouza.intellij.dropboxfocus.psi
 
 import br.com.devsrsouza.intellij.dropboxfocus.services.GRADLE_PROPERTY_SET_FUNCTION_NAME
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral
 
 internal fun PsiElement.findKotlinFunction(
     functionName: String,
@@ -31,7 +28,6 @@ internal fun PsiElement.forEachKotlinFunction(
     }
 }
 
-
 internal fun KtCallExpression.isFunctionName(functionName: String): Boolean {
     return children.asSequence().filterIsInstance<KtReferenceExpression>()
         .any { it.text == functionName }
@@ -47,7 +43,7 @@ internal fun KtCallExpression.findGradlePropertySetValueOnCallback(
         val isThePropertyWeAreLookingFor = it.children.asSequence().filterIsInstance<KtReferenceExpression>()
             .any { it.text == propertyName }
 
-        if(isThePropertyWeAreLookingFor) {
+        if (isThePropertyWeAreLookingFor) {
             // search for the set("") function call expression
             it.findKotlinFunction(GRADLE_PROPERTY_SET_FUNCTION_NAME) { it, arguments ->
                 // If it is, we will get the first parameter value

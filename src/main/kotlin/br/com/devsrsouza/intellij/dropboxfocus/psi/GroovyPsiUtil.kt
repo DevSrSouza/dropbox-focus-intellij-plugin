@@ -5,7 +5,6 @@ import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCommandArgumentList
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral
@@ -27,11 +26,11 @@ internal fun PsiElement.findGroovyMethodCall(
     // id("something") version "version", then the GrMethodCall that we want
     // will be in a lower tree
     return findDescendantOfType<GrMethodCall> {
-        if(it.isFunctionName(functionName)) {
+        if (it.isFunctionName(functionName)) {
             val arguments = it.children.asSequence().filterIsInstance<GrArgumentList>()
                 .firstOrNull()?.allArguments
 
-            if(arguments != null) {
+            if (arguments != null) {
                 callback(arguments)
             } else false
         } else true
@@ -58,4 +57,3 @@ internal fun GrMethodCall.isFunctionName(functionName: String): Boolean =
 
 internal fun String.removeSurroundingQuotes(): String = removeSurrounding("\"")
     .removeSurrounding("'")
-

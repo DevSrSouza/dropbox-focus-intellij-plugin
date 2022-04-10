@@ -1,11 +1,12 @@
-# Dropbox Focus IntelliJ Plugin
+# Dropbox Focus IntelliJ Plugin [WIP]
 
 ![Build](https://github.com/DevSrSouza/dropbox-focus-intellij-plugin/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
 <!-- Plugin description -->
-This IntelliJ and Android Studio Plugin provide tooling for work with Gradle Plugin [Focus from Dropbox](https://github.com/dropbox/focus).
+This IntelliJ and Android Studio Plugin provide tooling for Gradle Plugin [Focus by Dropbox](https://github.com/dropbox/focus).
+The reason is to make it easy to switch focus and preventing open a big project without giving you the option to only select the module that you want to work on.
 
 - When plugin detect that the project that is being open was Focus plugin, it will prompt a Dialog to Select if you want to select a Module to Focus, Clear current Focus or just leave as it is.
 - Focus on a Module by right-clicking on a Module folder and selecting "Focus on Module"

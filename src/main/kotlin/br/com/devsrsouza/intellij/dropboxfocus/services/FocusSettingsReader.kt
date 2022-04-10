@@ -1,6 +1,5 @@
 package br.com.devsrsouza.intellij.dropboxfocus.services
 
-import com.android.tools.idea.util.toIoFile
 import br.com.devsrsouza.intellij.dropboxfocus.actions.logger
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGradlePropertySetValueOnCallback
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGroovyHighOrderFunction
@@ -9,19 +8,20 @@ import br.com.devsrsouza.intellij.dropboxfocus.psi.findKotlinFunction
 import br.com.devsrsouza.intellij.dropboxfocus.psi.forEachGroovyMethodCall
 import br.com.devsrsouza.intellij.dropboxfocus.psi.forEachKotlinFunction
 import br.com.devsrsouza.intellij.dropboxfocus.psi.getFirstArgumentAsLiteralString
+import com.android.tools.idea.util.toIoFile
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.psi.PsiFile
-import java.io.File
-import java.nio.file.Path
-import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.div
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression
 import org.jetbrains.plugins.groovy.lang.psi.impl.stringValue
+import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.div
 
 internal const val GRADLE_PROPERTY_SET_FUNCTION_NAME = "set"
 
@@ -62,7 +62,7 @@ class FocusSettingsReader(private val project: Project) {
     fun getProjectFocusSettings(): FocusSettings? {
         val dir = project.guessProjectDir() ?: return null
 
-        val gradleSettingsFile =  File(dir.toIoFile(), SETTINGS_FILE).takeIf(File::exists)
+        val gradleSettingsFile = File(dir.toIoFile(), SETTINGS_FILE).takeIf(File::exists)
             ?: File(dir.toIoFile(), SETTINGS_KTS_FILE).takeIf(File::exists)
             ?: return null
 
@@ -72,7 +72,7 @@ class FocusSettingsReader(private val project: Project) {
     private fun readSettings(file: File): FocusSettings? {
         val psiFile = file.toPsiFile(project) ?: return null
 
-        return when(file.name) {
+        return when (file.name) {
             SETTINGS_KTS_FILE -> readKotlinScriptSettings(psiFile)
             SETTINGS_FILE -> readGroovySettings(psiFile)
             else -> null
@@ -88,7 +88,7 @@ class FocusSettingsReader(private val project: Project) {
             it.getFirstArgumentAsLiteralString() == FOCUS_GRADLE_PLUGIN_ID
         } != null
 
-        if(!isFocusPluginApplied) return null
+        if (!isFocusPluginApplied) return null
 
         // The focus configuration block could not be present, meaning that the user is using the default
         // focus plugin setting resulting in focusExtensionBlock being null
@@ -118,7 +118,7 @@ class FocusSettingsReader(private val project: Project) {
             arguments?.getFirstArgumentAsLiteralString() == FOCUS_GRADLE_PLUGIN_ID
         } != null
 
-        if(!isFocusPluginApplied) {
+        if (!isFocusPluginApplied) {
             return null
         }
 
@@ -152,7 +152,7 @@ class FocusSettingsReader(private val project: Project) {
         val allSettingsFile = File(dir.toIoFile(), allSettingsFileName).takeIf(File::exists) ?: return emptyList()
         val psiFile = allSettingsFile.toPsiFile(project) ?: return emptyList()
 
-        return when(allSettingsFile.extension) {
+        return when (allSettingsFile.extension) {
             "kts" -> readAllModulesFromKts(psiFile)
             "gradle" -> readAllModulesFromGroovy(psiFile)
             else -> emptyList()
@@ -165,7 +165,7 @@ class FocusSettingsReader(private val project: Project) {
         psiFile.forEachGroovyMethodCall(MODULE_INCLUDE_FUNCTION_NAME) {
             val modulePath = it.getFirstArgumentAsLiteralString()
 
-            if(modulePath != null) {
+            if (modulePath != null) {
                 modules += modulePath
             }
         }
@@ -188,7 +188,7 @@ class FocusSettingsReader(private val project: Project) {
         val modules = mutableListOf<String>()
         psiFile.forEachKotlinFunction(MODULE_INCLUDE_FUNCTION_NAME) { it, arguments ->
             val modulePath = arguments?.getFirstArgumentAsLiteralString()
-            if(modulePath != null) {
+            if (modulePath != null) {
                 modules += modulePath
             }
         }
@@ -211,7 +211,4 @@ class FocusSettingsReader(private val project: Project) {
             File(it, focusFileName).takeIf(File::exists)?.readText()
         }
     }
-
-
-
 }

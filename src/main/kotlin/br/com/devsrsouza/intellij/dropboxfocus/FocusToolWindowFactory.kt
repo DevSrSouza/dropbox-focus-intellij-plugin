@@ -5,7 +5,7 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 
 class FocusToolWindowFactory : ToolWindowFactory {
-  override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
+    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
 //    val panel = panel() {
 //      for(module in a ) {
 //        row(module.moduleName) {
@@ -15,17 +15,17 @@ class FocusToolWindowFactory : ToolWindowFactory {
 //    }
 //
 //    toolWindow.component.add(panel)
-  }
+    }
 
-  override fun isApplicable(project: Project): Boolean {
+    override fun isApplicable(project: Project): Boolean {
 //    val focusSettings = project.service<FocusSettingsReader>().getProjectFocusSettings() ?: return false
 //    project.allModules()
 //    focusSettings.allModules
-    //GradleLocalSettings.getInstance(project).recentTasks
-    //GradleSettings.getInstance(project).linkedProjectsSettings.forEach { }
-    //val isGradleAvailable = project.allModules().any { ExternalSystemApiUtil.isExternalSystemAwareModule(GradleConstants.SYSTEM_ID, it) }
+        // GradleLocalSettings.getInstance(project).recentTasks
+        // GradleSettings.getInstance(project).linkedProjectsSettings.forEach { }
+        // val isGradleAvailable = project.allModules().any { ExternalSystemApiUtil.isExternalSystemAwareModule(GradleConstants.SYSTEM_ID, it) }
 
-    //return super.isApplicable(project)
-    return false
-  }
+        // return super.isApplicable(project)
+        return false
+    }
 }

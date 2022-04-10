@@ -12,8 +12,8 @@ import com.intellij.openapi.externalSystem.task.TaskCallback
 import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
-import java.io.File
 import org.jetbrains.plugins.gradle.util.GradleConstants
+import java.io.File
 
 @Service
 class FocusService(private val project: Project) {
@@ -32,7 +32,7 @@ class FocusService(private val project: Project) {
 
         File(dir, focusSettings.focusFileName).takeIf(File::exists)?.delete()
 
-        if(requireSync) {
+        if (requireSync) {
             syncGradle()
         }
     }
@@ -74,7 +74,6 @@ class FocusService(private val project: Project) {
             project,
             GradleSyncStats.Trigger.TRIGGER_PROJECT_MODIFIED,
             object : GradleSyncListener {
-
             }
         )
     }
