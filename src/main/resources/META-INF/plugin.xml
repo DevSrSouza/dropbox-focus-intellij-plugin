@@ -1,18 +1,30 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.devsrsouza.dropboxfocusintellijplugin</id>
-    <name>dropbox-focus-intellij-plugin</name>
-    <vendor>devsrsouza</vendor>
+    <id>br.com.devsrsouza.intellij.dropboxfocus</id>
+    <name>Dropbox Focus</name>
+    <vendor>DevSrSouza</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>org.intellij.groovy</depends>
+    <depends>com.intellij.gradle</depends>
+    <depends>org.jetbrains.android</depends>
+    <depends>com.intellij.modules.externalSystem</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.devsrsouza.dropboxfocusintellijplugin.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.devsrsouza.dropboxfocusintellijplugin.services.MyProjectService"/>
+        <toolWindow factoryClass="br.com.devsrsouza.intellij.dropboxfocus.FocusToolWindowFactory" id="Focus"
+                    anchor="left" canCloseContents="false" secondary="true"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.devsrsouza.dropboxfocusintellijplugin.listeners.MyProjectManagerListener"
+        <listener class="br.com.devsrsouza.intellij.dropboxfocus.listeners.FocusProjectOpenListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
+
+    <actions>
+        <action id="Focus.SelectModule" text="Focus on Module"
+                class="br.com.devsrsouza.intellij.dropboxfocus.actions.FocusAction">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="WeighingNewGroup"/>
+        </action>
+    </actions>
 </idea-plugin>

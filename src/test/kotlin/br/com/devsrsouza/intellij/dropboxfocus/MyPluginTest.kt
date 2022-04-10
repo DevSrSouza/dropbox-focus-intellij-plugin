@@ -1,4 +1,4 @@
-package com.github.devsrsouza.dropboxfocusintellijplugin
+package br.com.devsrsouza.intellij.dropboxfocus
 
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.psi.xml.XmlFile
