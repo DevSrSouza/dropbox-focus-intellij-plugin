@@ -14,6 +14,15 @@ The reason is to make it easy to switch focus and preventing open a big project 
  
 <!-- Plugin description end -->
 
+### TODO
+
+- [ ] Focus tool window listing all possible focus modules</br>![](https://user-images.githubusercontent.com/29736164/162661724-6b3e70fd-3505-44d2-a519-afb43bd88fe6.png)
+- [ ] Support project dir change on `allSettingsFileName`, ex: `project(":sample:moved").projectDir = file("sample/lib-moved")`. Currently, by not supporting this, we can't properly show the `Focus on Module` on Module Dir that did change their `projectDir`.
+- [ ] Support Android Studio Gradle Sync (apparently the function is different for IntelliJ and Android Studio)
+- [ ] Improve and facilitate UI by using Compose
+- [ ] Favorites focus, a way for easily show Focus Modules on top that you most work on.
+- [ ] Disable Dialog on startup with a checkbox, persist per project.
+
 ## Installation
 
 - Using IDE built-in plugin system:
