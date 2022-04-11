@@ -50,6 +50,10 @@ qodana {
     showReport.set(System.getenv("QODANA_SHOW_REPORT")?.toBoolean() ?: false)
 }
 
+kotlinter {
+    reporters = arrayOf("checkstyle")
+}
+
 tasks {
     // Set the JVM compatibility versions
     properties("javaVersion").let {
