@@ -38,5 +38,5 @@ jobs:
           git diff >"${TMPFILE}"
           git stash -u && git stash drop
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s
-          ./bin/reviewdog -name="ktlint" -f=diff -f.diff.strip=1 -reporter=github-pr-review < "${TMPFILE}"
+          ./bin/reviewdog -name="ktlint" -f=diff -f.diff.strip=1 -reporter=github-pr-review < "${TMPFILE}" -fail-on-error="false"
           cat ${{ github.workspace }}/build/reports/ktlint/main-lint.xml | ./bin/reviewdog -f=checkstyle -name="ktlint" -reporter="github-pr-review" -level="error" -filter-mode="added" -fail-on-error="false"
