@@ -13,6 +13,7 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.*
 
 internal class FocusProjectOpenListener : ProjectManagerListener {
 
@@ -45,7 +46,8 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
                     if (focusSettings.currentFocus != null) {
                         add(JLabel("Current focus: ${focusSettings.currentFocus}"))
                     }
-                    add(JLabel("Select project to Focus"))
+                    add(
+             JLabel("Select project to Focus"))
 
                     for ((modulePath, _) in focusSettings.allModules) {
                         val button = JButton(modulePath).apply {
