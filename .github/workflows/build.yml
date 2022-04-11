@@ -69,6 +69,10 @@ jobs:
 
           ./gradlew listProductsReleases # prepare list of IDEs for Plugin Verifier
 
+      # Install ReviewDog
+      - name: Setup Review Dog
+        run: curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s
+
       # Run ktlint
       - name: Run KtLint
         run: ./gradlew lintKotlin
@@ -79,13 +83,7 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./gradlew formatKotlin
-          TMPFILE=$(mktemp)
-          git diff >"${TMPFILE}"
-          git stash -u && git stash drop
-          curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s
-          ./bin/reviewdog -name="ktlint" -f=diff -f.diff.strip=1 -reporter=github-pr-review < "${TMPFILE}"
-          #cat ${{ github.workspace }}/build/reports/ktlint/main-lint.xml | ./bin/reviewdog -f=checkstyle -name="ktlint" -reporter="github-pr-check" -level="error" -filter-mode="added" -fail-on-error="false"
+          cat ${{ github.workspace }}/build/reports/ktlint/main-lint.xml | ./bin/reviewdog -f=checkstyle -name="ktlint" -reporter="github-pr-check" -level="error" -filter-mode="added" -fail-on-error="false"
 
       # Run tests
       - name: Run Tests
