@@ -23,6 +23,10 @@ The reason is to make it easy to switch focus and preventing open a big project 
 - [ ] Favorites focus, a way for easily show Focus Modules on top that you most work on.
 - [ ] Disable Dialog on startup with a checkbox, persist per project.
 
+## Building
+
+Just run the gradle task in terminal: `./gradlew buildPlugin`. The plugin will be available in `/build/distributions/`
+
 ## Installation
 
 - Using IDE built-in plugin system:
@@ -32,7 +36,7 @@ The reason is to make it easy to switch focus and preventing open a big project 
   
 - Manually:
 
-  Download the [latest release](https://github.com/DevSrSouza/dropbox-focus-intellij-plugin/releases/latest) and install it manually using
+  Download the [latest release](https://github.com/DevSrSouza/dropbox-focus-intellij-plugin/releases/latest) or [build your self](#Building) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 
