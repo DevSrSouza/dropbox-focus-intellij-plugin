@@ -23,9 +23,7 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
         logger.debug("Founded Focus Settings in ${project.name}: $focusSettings")
 
         if (focusSettings != null) {
-            val focusService = project.service<
-                FocusService
-                >()
+            val focusService = project.service<FocusService>()
             selectFocusDialog(focusSettings, focusService)
                 .showAndGet()
         }
@@ -45,7 +43,9 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
                     if (focusSettings.currentFocus != null) {
                         add(JLabel("Current focus: ${focusSettings.currentFocus}"))
                     }
-                    add(JLabel("Select project to Focus"))
+                    add(
+                        JLabel("Select project to Focus")
+                    )
 
                     for ((modulePath, _) in focusSettings.allModules) {
                         val button = JButton(modulePath).apply {
