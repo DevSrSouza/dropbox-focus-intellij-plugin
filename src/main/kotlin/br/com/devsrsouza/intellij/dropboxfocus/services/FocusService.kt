@@ -68,13 +68,26 @@ class FocusService(private val project: Project) {
         )
     }
 
+    private val gradleProjectImporterInstance by lazy {
+        GradleSyncInvoker::class.java.getDeclaredMethod("getInstance").invoke(null)
+    }
+
+    private val requestProjectSyncMethod by lazy {
+        GradleSyncInvoker::class.java.getDeclaredMethod(
+            "requestProjectSync",
+            Project::class.java,
+            GradleSyncStats.Trigger::class.java,
+            GradleSyncListener::class.java,
+        )
+    }
+
     private fun syncGradle() {
-        // TODO: For Android Studio is required another solution, this one does not work apparently
-        GradleSyncInvoker.getInstance().requestProjectSync(
+        // Reflection required to fix bytecode incompatibility with AS 2021.3.1 Canary 7
+        requestProjectSyncMethod.invoke(
+            gradleProjectImporterInstance,
             project,
             GradleSyncStats.Trigger.TRIGGER_PROJECT_MODIFIED,
-            object : GradleSyncListener {
-            }
+            null
         )
     }
 }
