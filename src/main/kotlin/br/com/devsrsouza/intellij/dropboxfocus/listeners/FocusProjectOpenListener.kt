@@ -24,8 +24,8 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
 
         if (focusSettings != null) {
             val focusService = project.service<
-                    FocusService
-                    >()
+                FocusService
+                >()
             selectFocusDialog(focusSettings, focusService)
                 .showAndGet()
         }
