@@ -25,8 +25,8 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
 
         if (focusSettings != null) {
             val focusService = project.service<
-                FocusService
-                >()
+                    FocusService
+                    >()
             selectFocusDialog(focusSettings, focusService)
                 .showAndGet()
         }
@@ -34,7 +34,7 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
 
     // TODO: Migrate to Compose
     private fun selectFocusDialog(focusSettings: FocusSettings, focusService: FocusService): DialogWrapper =
-        object : DialogWrapper(true) {
+        object :            DialogWrapper(true) {
             init {
                 title = "Focus"
                 init()
@@ -43,22 +43,21 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
             override fun createCenterPanel(): JComponent? {
                 return JPanel().apply {
                     layout = GridLayout(0, 1)
-                    if (focusSettings.currentFocus != null) {
-                        add(JLabel("Current focus: ${focusSettings.currentFocus}"))
-                    }
-                    add(
-                        JLabel("Select project to Focus")
+                    if (focusSettings.currentFocus != null) { add(JLabel("Current focus: ${focusSettings.currentFocus}")) }
+                        add(
+                        JLabel(
+                            "Select project to Focus")
                     )
 
                     for ((modulePath, _) in focusSettings.allModules) {
                         val button = JButton(modulePath).apply {
-                            addActionListener {
+                                       addActionListener {
                                 close(0)
                                 focusService.focusOn(focusSettings, modulePath)
                             }
-                        }
+                                      }
 
-                        add(button)
+                             add(button)
                     }
                 }
             }
