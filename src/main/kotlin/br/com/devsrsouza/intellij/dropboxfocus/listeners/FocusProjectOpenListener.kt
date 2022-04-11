@@ -9,11 +9,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
 import com.intellij.openapi.ui.DialogWrapper
 import java.awt.GridLayout
+import javax.swing.*
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.*
 
 internal class FocusProjectOpenListener : ProjectManagerListener {
 
@@ -47,7 +47,8 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
                         add(JLabel("Current focus: ${focusSettings.currentFocus}"))
                     }
                     add(
-             JLabel("Select project to Focus"))
+                        JLabel("Select project to Focus")
+                    )
 
                     for ((modulePath, _) in focusSettings.allModules) {
                         val button = JButton(modulePath).apply {
