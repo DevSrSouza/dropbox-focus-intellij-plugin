@@ -73,6 +73,18 @@ jobs:
       - name: Setup Review Dog
         run: curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s
 
+      # Run ktlint
+      - name: Run KtLint
+        run: ./gradlew lintKotlin
+
+      - name: Collect KtLint Result
+        if: ${{ failure() }}
+        continue-on-error: true
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat ${{ github.workspace }}/build/reports/ktlint/main-lint.xml | ./bin/reviewdog -f=checkstyle -name="ktlint" -reporter="github-pr-check" -level="error" -filter-mode="added" -fail-on-error="false"
+
       # Run tests
       - name: Run Tests
         run: ./gradlew test
@@ -84,18 +96,6 @@ jobs:
         with:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
-
-      # Run ktlint
-      - name: Run KtLint
-        run: ./gradlew lintKotlin
-
-      - name: Collect KtLint Result
-        if: ${{ failure() }}
-        continue-on-error: true
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cat ${{ github.workspace }}/build/reports/ktlint/main-lint.xml | reviewdog -f=checkstyle -name="ktlint" -reporter="github-pr-check" -level="error" -filter-mode="added" -fail-on-error="false"
 
       # Cache Plugin Verifier IDEs
       - name: Setup Plugin Verifier IDEs Cache
