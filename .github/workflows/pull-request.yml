@@ -36,7 +36,7 @@ jobs:
           ./gradlew formatKotlin
           TMPFILE=$(mktemp)
           git diff >"${TMPFILE}"
-          ./gradlew lintKotlin
+          ./gradlew lintKotlin || true
           git stash -u && git stash drop
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s
           ./bin/reviewdog -name="ktlint" -f=diff -f.diff.strip=1 -reporter="github-pr-review" -fail-on-error="false" < "${TMPFILE}"
