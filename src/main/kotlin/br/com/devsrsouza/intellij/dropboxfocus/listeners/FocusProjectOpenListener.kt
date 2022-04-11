@@ -24,7 +24,9 @@ internal class FocusProjectOpenListener : ProjectManagerListener {
         logger.debug("Founded Focus Settings in ${project.name}: $focusSettings")
 
         if (focusSettings != null) {
-            val focusService = project.service<FocusService>()
+            val focusService = project.service<
+                FocusService
+                >()
             selectFocusDialog(focusSettings, focusService)
                 .showAndGet()
         }
