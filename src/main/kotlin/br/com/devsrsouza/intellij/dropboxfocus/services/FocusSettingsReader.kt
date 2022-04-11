@@ -114,9 +114,10 @@ class FocusSettingsReader(private val project: Project) {
         logger.debug("Looking into settings.gradle.kts (kotlin) to find Focus configuration")
         val pluginsExtensionBlock = psiFile.findKotlinFunction(GRADLE_PLUGINS_CALLBACK_NAME) ?: return null
 
-        val isFocusPluginApplied = pluginsExtensionBlock.findKotlinFunction(GRADLE_PLUGINS_ID_FUNCTION_NAME) { it, arguments ->
-            arguments?.getFirstArgumentAsLiteralString() == FOCUS_GRADLE_PLUGIN_ID
-        } != null
+        val isFocusPluginApplied = pluginsExtensionBlock
+            .findKotlinFunction(GRADLE_PLUGINS_ID_FUNCTION_NAME) { _, arguments ->
+                arguments?.getFirstArgumentAsLiteralString() == FOCUS_GRADLE_PLUGIN_ID
+            } != null
 
         if (!isFocusPluginApplied) {
             return null
