@@ -21,6 +21,8 @@ plugins {
 group = properties("pluginGroup")
 version = properties("pluginVersion")
 
+val customIdePath: String? by project
+
 // Configure project's dependencies
 repositories {
     mavenCentral()
@@ -118,5 +120,11 @@ tasks {
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
+    }
+
+    runIde {
+        if(customIdePath != null) {
+            ideDir.set(file(customIdePath))
+        }
     }
 }
