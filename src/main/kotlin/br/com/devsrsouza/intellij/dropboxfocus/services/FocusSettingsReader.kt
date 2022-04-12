@@ -8,15 +8,25 @@ import br.com.devsrsouza.intellij.dropboxfocus.psi.findKotlinFunction
 import br.com.devsrsouza.intellij.dropboxfocus.psi.forEachGroovyMethodCall
 import br.com.devsrsouza.intellij.dropboxfocus.psi.forEachKotlinFunction
 import br.com.devsrsouza.intellij.dropboxfocus.psi.getFirstArgumentAsLiteralString
+import br.com.devsrsouza.intellij.dropboxfocus.psi.getFunctionArguments
+import br.com.devsrsouza.intellij.dropboxfocus.psi.removeSurroundingQuotes
 import com.android.tools.idea.util.toIoFile
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.psi.PsiFile
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
+import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
+import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
+import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 import org.jetbrains.kotlin.psi.KtTypeArgumentList
 import org.jetbrains.kotlin.psi.psiUtil.findDescendantOfType
+import org.jetbrains.kotlin.psi.psiUtil.forEachDescendantOfType
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral
 import org.jetbrains.plugins.groovy.lang.psi.impl.stringValue
 import java.io.File
 import java.nio.file.Path
@@ -37,6 +47,8 @@ private const val FOCUS_EXTENSION_SIMPLE_TYPE_NAME = "FocusExtension"
 private const val ALL_SETTINGS_FILE_NAME_ASSIGNMENT_NAME = "allSettingsFileName"
 private const val FOCUS_FILE_NAME_ASSIGNMENT_NAME = "focusFileName"
 private const val MODULE_INCLUDE_FUNCTION_NAME = "include"
+private const val PROJECT_FUNCTION_NAME = "project"
+private const val SET_PROJECT_DIR_PROPERTY_NAME = "projectDir"
 private const val GRADLE_PLUGINS_CALLBACK_NAME = "plugins"
 private const val GRADLE_PLUGINS_ID_FUNCTION_NAME = "id"
 private const val FOCUS_GRADLE_PLUGIN_ID = "com.dropbox.focus"
@@ -162,47 +174,82 @@ class FocusSettingsReader(private val project: Project) {
 
     @OptIn(ExperimentalPathApi::class)
     private fun readAllModulesFromGroovy(psiFile: PsiFile): List<FocusModule> {
-        val modules = mutableListOf<String>()
+        val rootProjectDir = project.guessProjectDir()!!.toNioPath()
+        fun String.moduleDir() = rootProjectDir / replace(":", "/").removePrefix("/")
+
+        val modules = mutableMapOf<String, Path>()
         psiFile.forEachGroovyMethodCall(MODULE_INCLUDE_FUNCTION_NAME) {
             val modulePath = it.getFirstArgumentAsLiteralString()
 
             if (modulePath != null) {
-                modules += modulePath
+                modules += modulePath to modulePath.moduleDir()
             }
         }
 
-        val projectDir = project.guessProjectDir()!!.toNioPath()
+        psiFile.forEachDescendantOfType<GrAssignmentExpression> {
+            val modulePath = it.lValue.findGroovyMethodCall(PROJECT_FUNCTION_NAME)
+                ?.getFunctionArguments()
+                ?.getFirstArgumentAsLiteralString()
+                ?: return@forEachDescendantOfType
 
-        // TODO: support project dir change:
-        // include(":folder:someModule")
-        // project(":folder:someModule").projectDir = file("folder/another-dir")
-        return modules.map {
+            val isSetProjectDir = (it.lValue as? GrReferenceExpression)?.canonicalText == SET_PROJECT_DIR_PROPERTY_NAME
+
+            if (isSetProjectDir) {
+                val projectDirPath = it.rValue?.findDescendantOfType<GrLiteral>()?.stringValue()
+                    ?: return@forEachDescendantOfType
+
+                modules += modulePath to projectDirPath.moduleDir()
+            }
+        }
+
+        return modules.map { (modulePath, moduleDir) ->
             FocusModule(
-                gradleModulePath = it,
-                moduleDirPath = projectDir / it.replace(":", "/").removePrefix("/")
+                gradleModulePath = modulePath,
+                moduleDirPath = moduleDir,
             )
         }
     }
 
     @OptIn(ExperimentalPathApi::class)
     private fun readAllModulesFromKts(psiFile: PsiFile): List<FocusModule> {
-        val modules = mutableListOf<String>()
+        val rootProjectDir = project.guessProjectDir()!!.toNioPath()
+        fun String.moduleDir() = rootProjectDir / replace(":", "/").removePrefix("/")
+        val modules = mutableMapOf<String, Path>()
+
         psiFile.forEachKotlinFunction(MODULE_INCLUDE_FUNCTION_NAME) { it, arguments ->
             val modulePath = arguments?.getFirstArgumentAsLiteralString()
             if (modulePath != null) {
-                modules += modulePath
+                modules += modulePath to modulePath.moduleDir()
             }
         }
 
-        val projectDir = project.guessProjectDir()!!.toNioPath()
+        psiFile.forEachKotlinFunction(PROJECT_FUNCTION_NAME) { it, arguments ->
+            val modulePath = arguments?.getFirstArgumentAsLiteralString() ?: return@forEachKotlinFunction
+            if (modulePath !in modules.keys) return@forEachKotlinFunction
 
-        // TODO: support project dir change:
-        // include(":folder:someModule")
-        // project(":folder:someModule").projectDir = file("folder/another-dir")
-        return modules.map {
+            val projectDirExpression = it.parent as? KtDotQualifiedExpression ?: return@forEachKotlinFunction
+
+            val isProjectDir = projectDirExpression.children.filterIsInstance<KtNameReferenceExpression>()
+                .lastOrNull()?.text == SET_PROJECT_DIR_PROPERTY_NAME
+
+            if (isProjectDir) {
+                val setProjectDirExpression = projectDirExpression.parent as? KtBinaryExpression
+                    ?: return@forEachKotlinFunction
+
+                val resultsPsiElements = setProjectDirExpression.children.dropWhile { it !is KtOperationReferenceExpression }
+
+                val projectDirPath = resultsPsiElements.asSequence().mapNotNull {
+                    it.findDescendantOfType<KtStringTemplateExpression>()?.text?.removeSurroundingQuotes()
+                }.firstOrNull() ?: return@forEachKotlinFunction
+
+                modules += modulePath to projectDirPath.moduleDir()
+            }
+        }
+
+        return modules.map { (modulePath, moduleDirPath) ->
             FocusModule(
-                gradleModulePath = it,
-                moduleDirPath = projectDir / it.replace(":", "/").removePrefix("/")
+                gradleModulePath = modulePath,
+                moduleDirPath = moduleDirPath
             )
         }
     }

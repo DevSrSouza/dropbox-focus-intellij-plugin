@@ -124,7 +124,7 @@ tasks {
 
     runIde {
         if(customIdePath != null) {
-            ideDir.set(file(customIdePath))
+            ideDir.set(File(customIdePath))
         }
     }
 }

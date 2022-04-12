@@ -17,7 +17,7 @@ internal fun PsiFile.findGroovyHighOrderFunction(functionName: String): GrMethod
 
 internal fun PsiElement.findGroovyMethodCall(
     functionName: String,
-    callback: (arguments: Array<GroovyPsiElement>) -> Boolean
+    callback: (arguments: Array<GroovyPsiElement>) -> Boolean = { true }
 ): GrMethodCall? {
     // This will cover both GrMethodCallExpression or GrApplicationStatement
     // that difference by it format, for example
@@ -27,8 +27,7 @@ internal fun PsiElement.findGroovyMethodCall(
     // will be in a lower tree
     return findDescendantOfType<GrMethodCall> {
         if (it.isFunctionName(functionName)) {
-            val arguments = it.children.asSequence().filterIsInstance<GrArgumentList>()
-                .firstOrNull()?.allArguments
+            val arguments = it.getFunctionArguments()
 
             if (arguments != null) {
                 callback(arguments)
@@ -36,6 +35,10 @@ internal fun PsiElement.findGroovyMethodCall(
         } else true
     }
 }
+
+internal fun GrMethodCall.getFunctionArguments(): Array<GroovyPsiElement>? =
+    children.asSequence().filterIsInstance<GrArgumentList>()
+        .firstOrNull()?.allArguments
 
 internal fun PsiElement.forEachGroovyMethodCall(
     functionName: String,
