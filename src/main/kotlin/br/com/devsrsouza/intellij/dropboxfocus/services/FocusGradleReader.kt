@@ -55,23 +55,30 @@ private const val FOCUS_GRADLE_PLUGIN_ID = "com.dropbox.focus"
 
 private val FOCUS_EXTENSION_TYPE_NAMES = listOf(FOCUS_EXTENSION_FQN_TYPE_NAME, FOCUS_EXTENSION_SIMPLE_TYPE_NAME)
 
-data class FocusSettings(
+data class FocusGradleSettings(
     val allModulesSettingsFile: String,
     val focusFileName: String,
-    val currentFocus: String?,
+    val currentFocusGradleIncludeFile: String?,
     val allModules: List<FocusModule>,
-)
+) {
+    val currentFocusModulePath: String? get() {
+        val moduleDir = currentFocusGradleIncludeFile?.removeSuffix("/build/focus.settings.gradle")
+        return allModules.find { it.moduleDirRelativeToRootProjectDir == moduleDir }
+            ?.gradleModulePath
+    }
+}
 
 data class FocusModule(
     val gradleModulePath: String,
     val moduleDirPath: Path,
+    val moduleDirRelativeToRootProjectDir: String,
 )
 
 @Service
 class FocusSettingsReader(private val project: Project) {
     // TODO: settings cache and update cache with project gradle sync listener
 
-    fun getProjectFocusSettings(): FocusSettings? {
+    fun getProjectFocusSettings(): FocusGradleSettings? {
         val dir = project.guessProjectDir() ?: return null
 
         val gradleSettingsFile = File(dir.toIoFile(), SETTINGS_FILE).takeIf(File::exists)
@@ -81,7 +88,7 @@ class FocusSettingsReader(private val project: Project) {
         return readSettings(gradleSettingsFile)
     }
 
-    private fun readSettings(file: File): FocusSettings? {
+    private fun readSettings(file: File): FocusGradleSettings? {
         val psiFile = file.toPsiFile(project) ?: return null
 
         return when (file.name) {
@@ -91,7 +98,7 @@ class FocusSettingsReader(private val project: Project) {
         }
     }
 
-    fun readGroovySettings(psiFile: PsiFile): FocusSettings? {
+    fun readGroovySettings(psiFile: PsiFile): FocusGradleSettings? {
         logger.debug("Looking into settings.gradle (groovy) to find Focus configuration")
         val pluginsExtensionBlock = psiFile.findGroovyHighOrderFunction(GRADLE_PLUGINS_CALLBACK_NAME) ?: return null
 
@@ -114,15 +121,15 @@ class FocusSettingsReader(private val project: Project) {
             it.lValue.text == FOCUS_FILE_NAME_ASSIGNMENT_NAME
         }?.rValue?.stringValue() ?: FOCUS_FILE_NAME_DEFAULT
 
-        return FocusSettings(
+        return FocusGradleSettings(
             allModulesSettingsFile = allSettingsFileName,
             focusFileName = focusFileName,
-            currentFocus = getCurrentFocusOrNull(focusFileName),
+            currentFocusGradleIncludeFile = getCurrentFocusOrNull(focusFileName),
             allModules = readAllModules(allSettingsFileName),
         )
     }
 
-    fun readKotlinScriptSettings(psiFile: PsiFile): FocusSettings? {
+    fun readKotlinScriptSettings(psiFile: PsiFile): FocusGradleSettings? {
         logger.debug("Looking into settings.gradle.kts (kotlin) to find Focus configuration")
         val pluginsExtensionBlock = psiFile.findKotlinFunction(GRADLE_PLUGINS_CALLBACK_NAME) ?: return null
 
@@ -151,10 +158,10 @@ class FocusSettingsReader(private val project: Project) {
             ?.findGradlePropertySetValueOnCallback(FOCUS_FILE_NAME_ASSIGNMENT_NAME)
             ?: FOCUS_FILE_NAME_DEFAULT
 
-        return FocusSettings(
+        return FocusGradleSettings(
             allModulesSettingsFile = allSettingsFileName,
             focusFileName = focusFileName,
-            currentFocus = getCurrentFocusOrNull(focusFileName),
+            currentFocusGradleIncludeFile = getCurrentFocusOrNull(focusFileName),
             allModules = readAllModules(allSettingsFileName),
         )
     }
@@ -175,14 +182,14 @@ class FocusSettingsReader(private val project: Project) {
     @OptIn(ExperimentalPathApi::class)
     private fun readAllModulesFromGroovy(psiFile: PsiFile): List<FocusModule> {
         val rootProjectDir = project.guessProjectDir()!!.toNioPath()
-        fun String.moduleDir() = rootProjectDir / replace(":", "/").removePrefix("/")
+        fun String.pathAsModuleDir() = replace(":", "/").removePrefix("/")
 
-        val modules = mutableMapOf<String, Path>()
+        val modules = mutableMapOf<String, String>()
         psiFile.forEachGroovyMethodCall(MODULE_INCLUDE_FUNCTION_NAME) {
             val modulePath = it.getFirstArgumentAsLiteralString()
 
             if (modulePath != null) {
-                modules += modulePath to modulePath.moduleDir()
+                modules += modulePath to modulePath.pathAsModuleDir()
             }
         }
 
@@ -198,14 +205,15 @@ class FocusSettingsReader(private val project: Project) {
                 val projectDirPath = it.rValue?.findDescendantOfType<GrLiteral>()?.stringValue()
                     ?: return@forEachDescendantOfType
 
-                modules += modulePath to projectDirPath.moduleDir()
+                modules += modulePath to projectDirPath
             }
         }
 
         return modules.map { (modulePath, moduleDir) ->
             FocusModule(
                 gradleModulePath = modulePath,
-                moduleDirPath = moduleDir,
+                moduleDirPath = rootProjectDir / moduleDir,
+                moduleDirRelativeToRootProjectDir = moduleDir,
             )
         }
     }
@@ -213,13 +221,13 @@ class FocusSettingsReader(private val project: Project) {
     @OptIn(ExperimentalPathApi::class)
     private fun readAllModulesFromKts(psiFile: PsiFile): List<FocusModule> {
         val rootProjectDir = project.guessProjectDir()!!.toNioPath()
-        fun String.moduleDir() = rootProjectDir / replace(":", "/").removePrefix("/")
-        val modules = mutableMapOf<String, Path>()
+        fun String.pathAsModuleDir() = replace(":", "/").removePrefix("/")
+        val modules = mutableMapOf<String, String>()
 
         psiFile.forEachKotlinFunction(MODULE_INCLUDE_FUNCTION_NAME) { it, arguments ->
             val modulePath = arguments?.getFirstArgumentAsLiteralString()
             if (modulePath != null) {
-                modules += modulePath to modulePath.moduleDir()
+                modules += modulePath to modulePath.pathAsModuleDir()
             }
         }
 
@@ -242,14 +250,15 @@ class FocusSettingsReader(private val project: Project) {
                     it.findDescendantOfType<KtStringTemplateExpression>()?.text?.removeSurroundingQuotes()
                 }.firstOrNull() ?: return@forEachKotlinFunction
 
-                modules += modulePath to projectDirPath.moduleDir()
+                modules += modulePath to projectDirPath
             }
         }
 
-        return modules.map { (modulePath, moduleDirPath) ->
+        return modules.map { (modulePath, moduleDir) ->
             FocusModule(
                 gradleModulePath = modulePath,
-                moduleDirPath = moduleDirPath
+                moduleDirPath = rootProjectDir / moduleDir,
+                moduleDirRelativeToRootProjectDir = moduleDir,
             )
         }
     }

@@ -18,7 +18,7 @@ import java.io.File
 @Service
 class FocusService(private val project: Project) {
 
-    fun focusOn(focusSettings: FocusSettings, focusModulePath: String) {
+    fun focusOn(focusSettings: FocusGradleSettings, focusModulePath: String) {
         clearFocus(focusSettings, requireSync = false)
 
         runGradleTask("$focusModulePath:focus", onSuccess = {
@@ -27,7 +27,7 @@ class FocusService(private val project: Project) {
     }
 
     // RequireSync when used on Actions or on ClearFocus on the project startup clear focus selection
-    fun clearFocus(focusSettings: FocusSettings, requireSync: Boolean) {
+    fun clearFocus(focusSettings: FocusGradleSettings, requireSync: Boolean) {
         val dir = project.guessProjectDir()?.toIoFile() ?: return
 
         File(dir, focusSettings.focusFileName).takeIf(File::exists)?.delete()

@@ -55,7 +55,7 @@ class FocusAction : AnAction() {
         when {
             rootDir == clickedFolderPath -> {
                 event.presentation.text = CLEAR_FOCUS_TEXT
-                event.presentation.isEnabled = focusSettings.currentFocus != null
+                event.presentation.isEnabled = focusSettings.currentFocusGradleIncludeFile != null
             }
             focusSettings.allModules.any { it.moduleDirPath == clickedFolderPath } -> {
                 event.presentation.text = FOCUS_ON_MODULE_TEXT
