@@ -1,7 +1,7 @@
 package br.com.devsrsouza.intellij.dropboxfocus.actions
 
+import br.com.devsrsouza.intellij.dropboxfocus.services.FocusGradleSettingsReader
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusService
-import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettingsReader
 import com.intellij.idea.IdeaLogger
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -19,7 +19,7 @@ class FocusAction : AnAction() {
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project
-        val focusSettings = project?.service<FocusSettingsReader>()?.getProjectFocusSettings() ?: return
+        val focusSettings = project?.service<FocusGradleSettingsReader>()?.getProjectFocusSettings() ?: return
         val clickedFolderPath = event.getData(CommonDataKeys.VIRTUAL_FILE)?.toNioPath() ?: return
 
         val rootDir = project.guessProjectDir()?.toNioPath()
@@ -46,7 +46,7 @@ class FocusAction : AnAction() {
         }
 
         val project = event.project
-        val focusSettings = project?.service<FocusSettingsReader>()?.getProjectFocusSettings() ?: run {
+        val focusSettings = project?.service<FocusGradleSettingsReader>()?.getProjectFocusSettings() ?: run {
             hide()
             return
         }

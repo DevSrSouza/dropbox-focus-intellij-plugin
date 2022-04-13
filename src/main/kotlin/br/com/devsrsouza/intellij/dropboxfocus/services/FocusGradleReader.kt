@@ -75,17 +75,31 @@ data class FocusModule(
 )
 
 @Service
-class FocusSettingsReader(private val project: Project) {
-    // TODO: settings cache and update cache with project gradle sync listener
+class FocusGradleSettingsReader(private val project: Project) {
+    private var focusGradleSetting: FocusGradleSettings? = null
 
     fun getProjectFocusSettings(): FocusGradleSettings? {
-        val dir = project.guessProjectDir() ?: return null
+        if (focusGradleSetting == null) {
+            reloadProjectFocusSettings()
+        }
+
+        return focusGradleSetting
+    }
+
+    fun reloadProjectFocusSettings() {
+        val dir = project.guessProjectDir() ?: run {
+            focusGradleSetting = null
+            return
+        }
 
         val gradleSettingsFile = File(dir.toIoFile(), SETTINGS_FILE).takeIf(File::exists)
             ?: File(dir.toIoFile(), SETTINGS_KTS_FILE).takeIf(File::exists)
-            ?: return null
+            ?: run {
+                focusGradleSetting = null
+                return
+            }
 
-        return readSettings(gradleSettingsFile)
+        focusGradleSetting = readSettings(gradleSettingsFile)
     }
 
     private fun readSettings(file: File): FocusGradleSettings? {
@@ -244,7 +258,9 @@ class FocusSettingsReader(private val project: Project) {
                 val setProjectDirExpression = projectDirExpression.parent as? KtBinaryExpression
                     ?: return@forEachKotlinFunction
 
-                val resultsPsiElements = setProjectDirExpression.children.dropWhile { it !is KtOperationReferenceExpression }
+                val resultsPsiElements = setProjectDirExpression.children.dropWhile {
+                    it !is KtOperationReferenceExpression
+                }
 
                 val projectDirPath = resultsPsiElements.asSequence().mapNotNull {
                     it.findDescendantOfType<KtStringTemplateExpression>()?.text?.removeSurroundingQuotes()

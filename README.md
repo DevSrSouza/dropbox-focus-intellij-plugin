@@ -22,7 +22,7 @@ The reason is to make it easy to switch focus and preventing open a big project 
 - [ ] Focus Project View
 - [X] Disable Dialog on startup with a checkbox, persist per project.
 - [ ] Focus project settings
-- [ ] Cache Current Focus Settings and update it by listening to Gradle Syncs
+- [X] Cache Current Focus Settings and update it by listening to Gradle Syncs
 - [ ] Favorites focus, a way for easily show Focus Modules on top that you most work on.
 
 ## Building
