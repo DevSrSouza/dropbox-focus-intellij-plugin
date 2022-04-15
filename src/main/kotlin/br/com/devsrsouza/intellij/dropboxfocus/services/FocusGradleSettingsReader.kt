@@ -15,6 +15,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.psi.PsiFile
+import com.intellij.util.messages.Topic
 import org.jetbrains.kotlin.idea.core.util.toPsiFile
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -55,6 +56,16 @@ private const val FOCUS_GRADLE_PLUGIN_ID = "com.dropbox.focus"
 
 private val FOCUS_EXTENSION_TYPE_NAMES = listOf(FOCUS_EXTENSION_FQN_TYPE_NAME, FOCUS_EXTENSION_SIMPLE_TYPE_NAME)
 
+@FunctionalInterface
+interface FocusGradleSettingsListener {
+    companion object {
+        @Topic.ProjectLevel
+        val TOPIC = Topic(FocusGradleSettingsListener::class.java)
+    }
+
+    fun gradleSettingsChanged(gradleSettings: FocusGradleSettings?)
+}
+
 data class FocusGradleSettings(
     val allModulesSettingsFile: String,
     val focusFileName: String,
@@ -77,6 +88,12 @@ data class FocusModule(
 @Service
 class FocusGradleSettingsReader(private val project: Project) {
     private var focusGradleSetting: FocusGradleSettings? = null
+        set(value) {
+            field = value
+            project.messageBus
+                .syncPublisher(FocusGradleSettingsListener.TOPIC)
+                .gradleSettingsChanged(field)
+        }
 
     fun getProjectFocusSettings(): FocusGradleSettings? {
         if (focusGradleSetting == null) {

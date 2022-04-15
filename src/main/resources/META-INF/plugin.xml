@@ -12,8 +12,6 @@
     <depends>com.intellij.modules.externalSystem</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="br.com.devsrsouza.intellij.dropboxfocus.FocusToolWindowFactory" id="Focus"
-                    anchor="left" canCloseContents="false" secondary="true"/>
         <projectService serviceImplementation="br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings" />
     </extensions>
 

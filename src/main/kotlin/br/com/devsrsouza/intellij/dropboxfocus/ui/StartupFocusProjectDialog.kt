@@ -1,22 +1,14 @@
 package br.com.devsrsouza.intellij.dropboxfocus.ui
 
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusGradleSettings
-import br.com.devsrsouza.intellij.dropboxfocus.services.FocusModule
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusService
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings
-import br.com.devsrsouza.intellij.dropboxfocus.ui.util.onTextChange
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.openapi.ui.VerticalFlowLayout
-import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
-import com.intellij.ui.layout.CCFlags
 import com.intellij.ui.layout.panel
 import javax.swing.Action
-import javax.swing.JButton
 import javax.swing.JComponent
-import javax.swing.JPanel
 
 class StartupFocusProjectDialog(
     private val project: Project,
@@ -24,8 +16,6 @@ class StartupFocusProjectDialog(
     private val focusService: FocusService,
 ) : DialogWrapper(true) {
 
-    private val focusModulesListPanel by lazy { JPanel(VerticalFlowLayout()) }
-    private var currentSearchValue: String = ""
     init {
         title = "Focus"
         setCancelButtonText("Clear focus")
@@ -37,51 +27,13 @@ class StartupFocusProjectDialog(
     override fun createCenterPanel(): JComponent? = swing()
 
     private fun swing() = panel {
-        if (focusSettings.currentFocusModulePath != null) {
-            row {
-                cell {
-                    comment("Current focus")
-                    label("${focusSettings.currentFocusModulePath}")
-                }
+        FocusSelectionComponent(
+            focusSettings,
+            focusService,
+            onSelectModule = {
+                close(0)
             }
-        }
-
-        row { comment("Search") }
-        row {
-            component(
-                JBTextField().apply {
-                    onTextChange {
-                        currentSearchValue = text
-                        updateModulesList()
-                    }
-                }
-            ).focused()
-        }
-
-        row { comment("Choose a module to Focus") }
-
-        row {
-            component(JBScrollPane(focusModulesListPanel)).constraints(CCFlags.grow)
-        }
-    }.also {
-        updateModulesList()
-    }
-
-    private fun updateModulesList() {
-        focusModulesListPanel.apply {
-            removeAll()
-            for (module in modulesFilter()) {
-                add(
-                    JButton(module.gradleModulePath).apply {
-                        addActionListener {
-                            selectModule(module)
-                        }
-                    }
-                )
-            }
-            revalidate()
-            repaint()
-        }
+        ).render(this)
     }
 
     override fun doCancelAction() {
@@ -89,17 +41,6 @@ class StartupFocusProjectDialog(
         if (cancelAction.isEnabled) {
             focusService.clearFocus(focusSettings, requireSync = true)
         }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun modulesFilter() = focusSettings.allModules.filter {
-        currentSearchValue.isBlank() ||
-            currentSearchValue.lowercase() in it.gradleModulePath.lowercase()
-    }
-
-    private fun selectModule(module: FocusModule) {
-        close(0)
-        focusService.focusOn(focusSettings, module.gradleModulePath)
     }
 
     override fun createActions(): Array<Action> {
