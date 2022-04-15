@@ -64,7 +64,7 @@ class FocusService(private val project: Project) {
                 }
             },
             ProgressExecutionMode.NO_PROGRESS_ASYNC,
-            true,
+            false,
         )
     }
 
