@@ -25,8 +25,8 @@ All the gradle files resolution requires to be to use Literal Strings inside exp
 
 ```groovy
 plugins {
-  val focusVersion = "0.4.0"
-  id("com.dropbox.focus") version focusVersion
+  val focusPlugin = "com.dropbox.focus"
+  id(focusPlugin) version "0.4.0"
 }
 ```
 
