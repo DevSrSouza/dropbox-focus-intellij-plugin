@@ -10,11 +10,12 @@ import com.intellij.ui.layout.panel
 import com.intellij.ui.layout.toBinding
 import com.intellij.ui.layout.withSelectedBinding
 import javax.swing.JComponent
+import kotlin.reflect.full.primaryConstructor
 
 class FocusConfigurable(private val project: Project) : SearchableConfigurable {
 
     private val settings = project.service<FocusSettings>()
-    private val propertyGraph = PropertyGraph()
+    private val propertyGraph: PropertyGraph = newPropertyGraph()
     private val shouldShowStartupDialog = propertyGraph.graphProperty { settings.shouldShowStartupDialog }
 
     private val settingsPanel = panel {
@@ -44,4 +45,11 @@ class FocusConfigurable(private val project: Project) : SearchableConfigurable {
     companion object {
         const val ID = "br.com.devsrsouza.intellij.dropboxfocus.configurable"
     }
+}
+
+// This is required because on 2022.1 added a new default parameter to the Constructor that we don't require.
+// 2022.1: class PropertyGraph(debugName: String? = null, private val isBlockPropagation: Boolean = true)
+// 2021.1: class PropertyGraph(debugName: String? = null)
+private fun newPropertyGraph(): PropertyGraph {
+    return PropertyGraph::class.primaryConstructor!!.callBy(emptyMap())
 }
