@@ -12,6 +12,12 @@
     <depends>com.intellij.modules.externalSystem</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable
+                groupId="tools"
+                displayName="Dropbox Focus"
+                id="FocusConfigurable"
+                instance="br.com.devsrsouza.intellij.dropboxfocus.services.FocusConfigurable" />
+
         <projectService serviceImplementation="br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings" />
     </extensions>
 

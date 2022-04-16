@@ -21,7 +21,7 @@ The reason is to make it easy to switch focus and preventing open a big project 
 - [X] Support Gradle Sync also on Android Studio Canary version.
 - [ ] Focus Project View
 - [X] Disable Dialog on startup with a checkbox, persist per project.
-- [ ] Focus project settings
+- [X] Focus project settings
 - [X] Cache Current Focus Settings and update it by listening to Gradle Syncs
 - [ ] Favorites focus, a way for easily show Focus Modules on top that you most work on.
 
