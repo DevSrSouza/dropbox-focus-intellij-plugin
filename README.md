@@ -61,10 +61,8 @@ configure<com.dropbox.focus.FocusExtension> {
 
 ### Screenshots
 
-<img height="400" src="screenshots/startup-dialog.png" />
-<img height="600" src="screenshots/toolwindow.png" />
-<img height="600" src="screenshots/toolwindow-search.png" />
-<img height="600" src="screenshots/focus-on-module.png" />
+<img height="400" src="screenshots/startup-dialog.png" /><img height="600" src="screenshots/toolwindow.png" />
+<img height="600" src="screenshots/toolwindow-search.png" /><img height="600" src="screenshots/focus-on-module.png" />
 <img height="600" src="screenshots/clear-focus.png" />
 
 ### TODO v1
