@@ -1,4 +1,4 @@
-# Dropbox Focus IntelliJ Plugin [WIP]
+# Dropbox Focus IntelliJ Plugin
 
 ![Build](https://github.com/DevSrSouza/dropbox-focus-intellij-plugin/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/18973.svg)](https://plugins.jetbrains.com/plugin/18973)
