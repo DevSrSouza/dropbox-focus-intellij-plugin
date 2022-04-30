@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusGradleSettings
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusModule
 import io.kanro.compose.jetbrains.JBTheme
-import io.kanro.compose.jetbrains.JBThemeFromIntelliJ
 import io.kanro.compose.jetbrains.color.LocalButtonColors
 import io.kanro.compose.jetbrains.control.Button
 import io.kanro.compose.jetbrains.control.JPanel
@@ -41,9 +40,7 @@ fun FocusSelection(
     syncGradle: () -> Unit,
     selectModuleToFocus: (FocusGradleSettings, FocusModule) -> Unit,
 ) {
-    JBThemeFromIntelliJ(
-        typography = intelliJTypography()
-    ) {
+    Theme {
         JPanel(
             modifier = Modifier.fillMaxSize()
         ) {
