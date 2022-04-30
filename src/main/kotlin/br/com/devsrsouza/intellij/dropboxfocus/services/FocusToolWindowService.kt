@@ -57,7 +57,8 @@ class FocusToolWindowService(private val project: Project) : Disposable {
                     preferredSize = Dimension(300, 300)
                     setContent {
                         FocusSelection(
-                            currentFocusGradleSettingsState = project.service<FocusGradleSettingsReader>().focusGradleSettings,
+                            currentFocusGradleSettingsState = project.service<FocusGradleSettingsReader>()
+                                .focusGradleSettings,
                             isLoadingState = focusService.focusOperationState,
                             syncGradle = focusService::syncGradle,
                             selectModuleToFocus = { focusGradleSettings, focusModule ->

@@ -7,7 +7,6 @@ import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusToolWindowService
 import br.com.devsrsouza.intellij.dropboxfocus.ui.dialog.StartupFocusProjectDialog
 import com.android.tools.idea.gradle.project.sync.GradleSyncState
-import com.intellij.ide.ui.LafManagerListener
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
