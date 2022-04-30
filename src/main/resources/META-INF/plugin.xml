@@ -24,6 +24,8 @@
     <applicationListeners>
         <listener class="br.com.devsrsouza.intellij.dropboxfocus.listeners.FocusProjectOpenListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
+        <listener class="br.com.devsrsouza.intellij.dropboxfocus.listeners.ThemeChangeListener"
+                  topic="com.intellij.ide.ui.LafManagerListener" />
     </applicationListeners>
 
     <actions>

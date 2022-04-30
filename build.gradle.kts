@@ -9,13 +9,15 @@ plugins {
     // Kotlin support
     id("org.jetbrains.kotlin.jvm") version "1.6.10"
     // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.4.0"
+    id("org.jetbrains.intellij") version "1.5.3"
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
 
     id("org.jmailen.kotlinter") version "3.9.0"
+
+    id("org.jetbrains.compose") version "1.1.0"
 }
 
 group = properties("pluginGroup")
@@ -26,6 +28,26 @@ val customIdePath: String? by project
 // Configure project's dependencies
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
+}
+
+configurations {
+    compileClasspath.resolutionStrategy.sortArtifacts(ResolutionStrategy.SortOrder.DEPENDENCY_FIRST)
+    testCompileClasspath.resolutionStrategy.sortArtifacts(ResolutionStrategy.SortOrder.DEPENDENCY_FIRST)
+}
+
+dependencies {
+    api(compose.desktop.common)
+    api(compose.desktop.macos_x64)
+    api(compose.desktop.macos_arm64)
+    api(compose.desktop.windows_x64)
+    api(compose.desktop.linux_x64)
+    api(compose.desktop.linux_arm64)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+
+    implementation("com.github.DevSrSouza:compose-jetbrains-theme:1ad6cb4665")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin

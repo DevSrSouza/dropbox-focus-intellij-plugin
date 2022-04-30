@@ -5,8 +5,9 @@ import br.com.devsrsouza.intellij.dropboxfocus.services.FocusGradleSettingsReade
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusService
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusToolWindowService
-import br.com.devsrsouza.intellij.dropboxfocus.ui.StartupFocusProjectDialog
+import br.com.devsrsouza.intellij.dropboxfocus.ui.dialog.StartupFocusProjectDialog
 import com.android.tools.idea.gradle.project.sync.GradleSyncState
+import com.intellij.ide.ui.LafManagerListener
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
@@ -14,7 +15,7 @@ import com.intellij.openapi.project.ProjectManagerListener
 internal class FocusProjectOpenListener : ProjectManagerListener {
 
     override fun projectOpened(project: Project) {
-        GradleSyncState.subscribe(project, FocusGradleSyncListener())
+        GradleSyncState.subscribe(project, createFocusGradleSyncListener())
         project.service<FocusToolWindowService>().init()
 
         val shouldShowDialog = project.service<FocusSettings>().shouldShowStartupDialog

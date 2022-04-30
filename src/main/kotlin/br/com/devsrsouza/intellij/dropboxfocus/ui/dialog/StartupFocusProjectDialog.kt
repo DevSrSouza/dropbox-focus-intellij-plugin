@@ -1,12 +1,15 @@
-package br.com.devsrsouza.intellij.dropboxfocus.ui
+package br.com.devsrsouza.intellij.dropboxfocus.ui.dialog
 
+import androidx.compose.ui.awt.ComposePanel
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusGradleSettings
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusService
 import br.com.devsrsouza.intellij.dropboxfocus.services.FocusSettings
+import br.com.devsrsouza.intellij.dropboxfocus.ui.FocusSelection
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.layout.panel
+import kotlinx.coroutines.flow.MutableStateFlow
+import java.awt.Dimension
 import javax.swing.Action
 import javax.swing.JComponent
 
@@ -26,15 +29,21 @@ class StartupFocusProjectDialog(
 
     override fun createCenterPanel(): JComponent? = swing()
 
-    private fun swing() = panel {
-        FocusSelectionComponent(
-            focusSettings,
-            focusService,
-            onSelectModule = {
-                close(0)
+    private fun swing() =
+        ComposePanel().apply {
+            size = Dimension(300, 300)
+            setContent {
+                FocusSelection(
+                    currentFocusGradleSettingsState = MutableStateFlow(focusSettings),
+                    isLoadingState = MutableStateFlow(false),
+                    syncGradle = {},
+                    selectModuleToFocus = { settings, module ->
+                        focusService.focusOn(settings, module.gradleModulePath)
+                        close(0)
+                    },
+                )
             }
-        ).render(this)
-    }
+        }
 
     override fun doCancelAction() {
         super.doCancelAction()

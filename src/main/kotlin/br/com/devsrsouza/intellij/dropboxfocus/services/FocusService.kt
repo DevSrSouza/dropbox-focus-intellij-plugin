@@ -12,18 +12,27 @@ import com.intellij.openapi.externalSystem.task.TaskCallback
 import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.io.File
 
 @Service
 class FocusService(private val project: Project) {
+    internal val _focusOperationState = MutableStateFlow(false)
+    val focusOperationState: StateFlow<Boolean> = _focusOperationState
 
     fun focusOn(focusSettings: FocusGradleSettings, focusModulePath: String) {
-        clearFocus(focusSettings, requireSync = false)
+        _focusOperationState.value = true
+        try {
+            clearFocus(focusSettings, requireSync = false)
 
-        runGradleTask("$focusModulePath:focus", onSuccess = {
-            syncGradle()
-        })
+            runGradleTask("$focusModulePath:focus", onSuccess = {
+                syncGradle()
+            })
+        } catch (e: Exception) {
+            _focusOperationState.value = false
+        }
     }
 
     // RequireSync when used on Actions or on ClearFocus on the project startup clear focus selection
@@ -81,7 +90,9 @@ class FocusService(private val project: Project) {
         )
     }
 
-    private fun syncGradle() {
+    fun syncGradle() {
+        _focusOperationState.value = true
+
         // Reflection required to fix bytecode incompatibility with AS 2021.3.1 Canary 7
         requestProjectSyncMethod.invoke(
             gradleProjectImporterInstance,
