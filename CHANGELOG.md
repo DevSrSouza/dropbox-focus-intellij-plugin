@@ -3,6 +3,8 @@
 # dropbox-focus-intellij-plugin Changelog
 
 ## [Unreleased]
+### Changed
+- Fix IntelliJ missing dependency on com.intellij.modules.java
 
 ## [0.1.0]
 ### Added
