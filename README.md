@@ -1,8 +1,9 @@
 # Dropbox Focus IntelliJ Plugin
 
 ![Build](https://github.com/DevSrSouza/dropbox-focus-intellij-plugin/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/18973.svg)](https://plugins.jetbrains.com/plugin/18973)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/18973.svg)](https://plugins.jetbrains.com/plugin/18973)
+[![Version](https://img.shields.io/jetbrains/plugin/v/19104.svg)](https://plugins.jetbrains.com/plugin/19104)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/19104.svg)](https://plugins.jetbrains.com/plugin/19104)
+
 
 <!-- Plugin description -->
 [**Source code**](https://github.com/DevSrSouza/dropbox-focus-intellij-plugin/) [**Screenshots**](https://github.com/DevSrSouza/dropbox-focus-intellij-plugin/#Screenshots)
