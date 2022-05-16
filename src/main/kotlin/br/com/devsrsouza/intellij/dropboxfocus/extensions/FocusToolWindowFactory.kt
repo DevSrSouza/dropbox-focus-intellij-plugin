@@ -19,14 +19,22 @@ class FocusToolWindowFactory : ToolWindowFactory {
                     val focusService = project.service<FocusService>()
                     preferredSize = Dimension(300, 300)
                     setContent {
+                        val gradleSettingsState = project.service<FocusGradleSettingsReader>()
+                            .focusGradleSettings
                         FocusSelection(
-                            currentFocusGradleSettingsState = project.service<FocusGradleSettingsReader>()
-                                .focusGradleSettings,
+                            currentFocusGradleSettingsState = gradleSettingsState,
                             isLoadingState = focusService.focusOperationState,
                             syncGradle = focusService::syncGradle,
                             selectModuleToFocus = { focusGradleSettings, focusModule ->
                                 focusService.focusOn(focusGradleSettings, focusModule.gradleModulePath)
-                            }
+                            },
+                            clearFocus = {
+                                focusService.clearFocus(
+                                    focusSettings = gradleSettingsState.value!!,
+                                    requireSync = true,
+                                )
+                            },
+                            withClearFocusButton = true,
                         )
                     }
                 }

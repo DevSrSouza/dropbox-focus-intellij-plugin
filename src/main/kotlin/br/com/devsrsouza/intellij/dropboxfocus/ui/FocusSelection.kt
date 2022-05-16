@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +40,8 @@ fun FocusSelection(
     isLoadingState: StateFlow<Boolean>,
     syncGradle: () -> Unit,
     selectModuleToFocus: (FocusGradleSettings, FocusModule) -> Unit,
+    clearFocus: () -> Unit,
+    withClearFocusButton: Boolean,
 ) {
     Theme {
         JPanel(
@@ -81,7 +84,9 @@ fun FocusSelection(
                 } else {
                     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) {
                         if (currentFocusGradleSettings.currentFocusModulePath != null) {
-                            Row {
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
                                 Text(
                                     text = "Current focus:",
                                     style = JBTheme.typography.h3Bold,
@@ -92,6 +97,12 @@ fun FocusSelection(
                                     style = JBTheme.typography.h3,
                                     color = JBTheme.textColors.success,
                                 )
+                                if (withClearFocusButton) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Button(onClick = clearFocus) {
+                                        Text("Clear Focus")
+                                    }
+                                }
                             }
                         }
 

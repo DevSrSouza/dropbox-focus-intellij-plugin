@@ -41,6 +41,8 @@ class StartupFocusProjectDialog(
                         focusService.focusOn(settings, module.gradleModulePath)
                         close(0)
                     },
+                    clearFocus = {},
+                    withClearFocusButton = false,
                 )
             }
         }
