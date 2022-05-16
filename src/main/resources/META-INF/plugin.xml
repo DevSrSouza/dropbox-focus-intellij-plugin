@@ -34,8 +34,12 @@
 
     <actions>
         <action id="Focus.SelectModule" text="Focus on Module"
-                class="br.com.devsrsouza.intellij.dropboxfocus.actions.FocusAction">
+                class="br.com.devsrsouza.intellij.dropboxfocus.actions.FocusFileAction">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="WeighingNewGroup"/>
+        </action>
+        <action id="Focus.ClearFocus" text="Clear Focus"
+                class="br.com.devsrsouza.intellij.dropboxfocus.actions.ClearFocusAction">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>

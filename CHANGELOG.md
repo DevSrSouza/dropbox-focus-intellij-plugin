@@ -5,6 +5,7 @@
 ## [Unreleased]
 ### Added
 - Adding a clear focus button to side tool window
+- Adding clear focus action (SHIFT+SHIFT "Clear Focus")
 
 ## [0.1.1]
 ### Changed

@@ -11,7 +11,7 @@ import com.intellij.openapi.project.guessProjectDir
 
 val logger by lazy { IdeaLogger.getFactory().getLoggerInstance("Focus") }
 
-class FocusAction : AnAction() {
+class FocusFileAction : AnAction() {
     private companion object {
         const val FOCUS_ON_MODULE_TEXT = "Focus on Module"
         const val CLEAR_FOCUS_TEXT = "Clear Focus"
