@@ -87,19 +87,23 @@ fun FocusSelection(
                             Row(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Text(
-                                    text = "Current focus:",
-                                    style = JBTheme.typography.h3Bold,
-                                )
-                                Text(
-                                    text = currentFocusGradleSettings.currentFocusModulePath ?: "None",
-                                    modifier = Modifier.padding(start = 24.dp),
-                                    style = JBTheme.typography.h3,
-                                    color = JBTheme.textColors.success,
-                                )
+                                Column {
+                                    Text(
+                                        text = "Current focus:",
+                                        style = JBTheme.typography.h3Bold,
+                                    )
+                                    Text(
+                                        text = currentFocusGradleSettings.currentFocusModulePath ?: "None",
+                                        style = JBTheme.typography.h3,
+                                        color = JBTheme.textColors.success,
+                                    )
+                                }
                                 if (withClearFocusButton) {
                                     Spacer(modifier = Modifier.weight(1f))
-                                    Button(onClick = clearFocus) {
+                                    Button(
+                                        onClick = clearFocus,
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    ) {
                                         Text("Clear Focus")
                                     }
                                 }
