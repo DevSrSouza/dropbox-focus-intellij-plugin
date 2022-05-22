@@ -7,6 +7,9 @@
 - Adding a clear focus button to side tool window
 - Adding clear focus action (SHIFT+SHIFT "Clear Focus")
 
+### Fixed
+- Gradle sync not being triggered in Android Studio 2022.1 Canary 1
+
 ## [0.1.1]
 ### Changed
 - Fix IntelliJ missing dependency on com.intellij.modules.java
