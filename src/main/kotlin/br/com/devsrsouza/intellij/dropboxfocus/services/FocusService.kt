@@ -90,15 +90,34 @@ class FocusService(private val project: Project) {
         )
     }
 
+    private val requestProjectSyncMethodWithRequest by lazy {
+        GradleSyncInvoker::class.java.getDeclaredMethod(
+            "requestProjectSync",
+            Project::class.java,
+            GradleSyncInvoker.Request::class.java,
+            GradleSyncListener::class.java,
+        )
+    }
+
     fun syncGradle() {
         _focusOperationState.value = true
 
-        // Reflection required to fix bytecode incompatibility with AS 2021.3.1 Canary 7
-        requestProjectSyncMethod.invoke(
-            gradleProjectImporterInstance,
-            project,
-            GradleSyncStats.Trigger.TRIGGER_PROJECT_MODIFIED,
-            null
-        )
+        runCatching {
+            // Reflection required to fix bytecode incompatibility with AS 2021.3.1 Canary 7
+            requestProjectSyncMethod.invoke(
+                gradleProjectImporterInstance,
+                project,
+                GradleSyncStats.Trigger.TRIGGER_PROJECT_MODIFIED,
+                null
+            )
+        }.onFailure {
+            // AS 2022.1 Canary 1 does not have a function with [Trigger] type
+            requestProjectSyncMethodWithRequest.invoke(
+                gradleProjectImporterInstance,
+                project,
+                GradleSyncInvoker.Request(GradleSyncStats.Trigger.TRIGGER_PROJECT_MODIFIED),
+                null,
+            )
+        }
     }
 }
