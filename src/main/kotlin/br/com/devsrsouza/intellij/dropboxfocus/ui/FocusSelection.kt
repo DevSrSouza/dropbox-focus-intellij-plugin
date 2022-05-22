@@ -82,23 +82,10 @@ fun FocusSelection(
                         }
                     }
                 } else {
-                    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)) {
+                    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)) {
                         if (currentFocusGradleSettings.currentFocusModulePath != null) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Column {
-                                    Text(
-                                        text = "Current focus:",
-                                        style = JBTheme.typography.h3Bold,
-                                    )
-                                    Text(
-                                        text = currentFocusGradleSettings.currentFocusModulePath ?: "None",
-                                        style = JBTheme.typography.h3,
-                                        color = JBTheme.textColors.success,
-                                    )
-                                }
-                                if (withClearFocusButton) {
+                            if (withClearFocusButton) {
+                                Row(modifier = Modifier.fillMaxWidth()) {
                                     Spacer(modifier = Modifier.weight(1f))
                                     Button(
                                         onClick = clearFocus,
@@ -108,6 +95,15 @@ fun FocusSelection(
                                     }
                                 }
                             }
+                            Text(
+                                text = "Current focus:",
+                                style = JBTheme.typography.h3Bold,
+                            )
+                            Text(
+                                text = currentFocusGradleSettings.currentFocusModulePath ?: "None",
+                                style = JBTheme.typography.h3,
+                                color = JBTheme.textColors.success,
+                            )
                         }
 
                         Text(
