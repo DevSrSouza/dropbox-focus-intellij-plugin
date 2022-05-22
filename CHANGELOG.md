@@ -3,6 +3,8 @@
 # dropbox-focus-intellij-plugin Changelog
 
 ## [Unreleased]
+
+## [0.2.0]
 ### Added
 - Adding a clear focus button to side tool window
 - Adding clear focus action (SHIFT+SHIFT "Clear Focus")
