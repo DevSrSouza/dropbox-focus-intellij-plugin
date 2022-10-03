@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.2.1]
+### Added
+- Adding support to IDEA 222.* and 223.* ( IntelliJ 2022.3 EAP and Android Studio Flamingo 2022.2)
+
 ## [0.2.0]
 ### Added
 - Adding a clear focus button to side tool window
