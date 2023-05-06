@@ -7,9 +7,9 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
+    id("org.jetbrains.kotlin.jvm") version "1.8.20"
     // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.5.3"
+    id("org.jetbrains.intellij") version "1.13.3"
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
@@ -17,7 +17,7 @@ plugins {
 
     id("org.jmailen.kotlinter") version "3.9.0"
 
-    id("org.jetbrains.compose") version "1.1.0"
+    id("org.jetbrains.compose") version "1.4.0"
 }
 
 group = properties("pluginGroup")
@@ -44,8 +44,8 @@ dependencies {
     api(compose.desktop.linux_x64)
     api(compose.desktop.linux_arm64)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
 
     implementation("com.github.DevSrSouza:compose-jetbrains-theme:1ad6cb4665")
 }
