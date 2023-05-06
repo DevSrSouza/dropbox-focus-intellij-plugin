@@ -60,3 +60,6 @@ internal fun KtCallExpression.findGradlePropertySetValueOnCallback(
 
 internal fun List<KtValueArgument>.getFirstArgumentAsLiteralString(): String? =
     firstOrNull()?.text?.removeSurrounding("\"")
+
+internal fun List<KtValueArgument>.getAllArgumentAsLiteralString(): List<String> =
+    map { it.text.removeSurrounding("\"") }

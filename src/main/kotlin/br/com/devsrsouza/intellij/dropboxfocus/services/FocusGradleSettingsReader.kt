@@ -1,6 +1,7 @@
 package br.com.devsrsouza.intellij.dropboxfocus.services
 
 import br.com.devsrsouza.intellij.dropboxfocus.actions.logger
+import br.com.devsrsouza.intellij.dropboxfocus.psi.*
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGradlePropertySetValueOnCallback
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGroovyHighOrderFunction
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGroovyMethodCall
@@ -203,9 +204,8 @@ class FocusGradleSettingsReader(private val project: Project) {
 
         val modules = mutableMapOf<String, String>()
         psiFile.forEachGroovyMethodCall(MODULE_INCLUDE_FUNCTION_NAME) {
-            val modulePath = it.getFirstArgumentAsLiteralString()
-
-            if (modulePath != null) {
+            val modulePaths = it.getAllArgumentAsLiteralString()
+            for (modulePath in modulePaths) {
                 modules += modulePath to modulePath.pathAsModuleDir()
             }
         }
@@ -242,9 +242,11 @@ class FocusGradleSettingsReader(private val project: Project) {
         val modules = mutableMapOf<String, String>()
 
         psiFile.forEachKotlinFunction(MODULE_INCLUDE_FUNCTION_NAME) { it, arguments ->
-            val modulePath = arguments?.getFirstArgumentAsLiteralString()
-            if (modulePath != null) {
-                modules += modulePath to modulePath.pathAsModuleDir()
+            val modulePaths = arguments?.getAllArgumentAsLiteralString()
+            if (modulePaths != null) {
+                for (modulePath in modulePaths) {
+                    modules += modulePath to modulePath.pathAsModuleDir()
+                }
             }
         }
 

@@ -54,6 +54,9 @@ internal fun Array<GroovyPsiElement>.getFirstArgumentAsLiteralString(): String? 
     firstOrNull()?.findDescendantOfType<GrLiteral>()?.text
         ?.removeSurroundingQuotes()
 
+internal fun Array<GroovyPsiElement>.getAllArgumentAsLiteralString(): List<String> =
+    mapNotNull { it.findDescendantOfType<GrLiteral>()?.text?.removeSurroundingQuotes() }
+
 internal fun GrMethodCall.isFunctionName(functionName: String): Boolean =
     children.asSequence().filterIsInstance<GrReferenceExpression>()
         .any { it.text == functionName }
