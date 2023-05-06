@@ -1,13 +1,13 @@
 package br.com.devsrsouza.intellij.dropboxfocus.services
 
 import br.com.devsrsouza.intellij.dropboxfocus.actions.logger
-import br.com.devsrsouza.intellij.dropboxfocus.psi.*
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGradlePropertySetValueOnCallback
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGroovyHighOrderFunction
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findGroovyMethodCall
 import br.com.devsrsouza.intellij.dropboxfocus.psi.findKotlinFunction
 import br.com.devsrsouza.intellij.dropboxfocus.psi.forEachGroovyMethodCall
 import br.com.devsrsouza.intellij.dropboxfocus.psi.forEachKotlinFunction
+import br.com.devsrsouza.intellij.dropboxfocus.psi.getAllArgumentAsLiteralString
 import br.com.devsrsouza.intellij.dropboxfocus.psi.getFirstArgumentAsLiteralString
 import br.com.devsrsouza.intellij.dropboxfocus.psi.getFunctionArguments
 import br.com.devsrsouza.intellij.dropboxfocus.psi.removeSurroundingQuotes
