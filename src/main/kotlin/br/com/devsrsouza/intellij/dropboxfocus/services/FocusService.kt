@@ -99,6 +99,12 @@ class FocusService(private val project: Project) {
         )
     }
 
+    private val requestConstructor by lazy {
+        GradleSyncInvoker.Request::class.java.getConstructor(
+            GradleSyncStats.Trigger::class.java
+        )
+    }
+
     fun syncGradle() {
         _focusOperationState.value = true
 
@@ -112,12 +118,14 @@ class FocusService(private val project: Project) {
             )
         }.onFailure {
             // AS 2022.1 Canary 1 does not have a function with [Trigger] type
-            requestProjectSyncMethodWithRequest.invoke(
-                gradleProjectImporterInstance,
-                project,
-                GradleSyncInvoker.Request(GradleSyncStats.Trigger.TRIGGER_PROJECT_MODIFIED),
-                null,
-            )
+            try {
+                requestProjectSyncMethodWithRequest.invoke(
+                    gradleProjectImporterInstance,
+                    project,
+                    requestConstructor.newInstance(GradleSyncStats.Trigger.TRIGGER_PROJECT_MODIFIED),
+                    null,
+                )
+            } catch (e: Throwable) {}
         }
     }
 }
