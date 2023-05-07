@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+## [0.2.2]
+Added
+- Adding support to IDEA 231.* ( IntelliJ 2023.1 and Android Studio Hedgehog Canary 2023.1)
+- Adding support for Settings block with Varargs include, example: `include(":moduleA", ":moduleB")`
+
 ## [0.2.1]
 ### Added
 - Adding support to IDEA 222.* and 223.* ( IntelliJ 2022.3 EAP and Android Studio Flamingo 2022.2)
